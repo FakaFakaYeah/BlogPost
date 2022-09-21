@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.core.cache import cache
 
 from ..models import Post, Group, User
 
@@ -27,7 +26,6 @@ class PostURLTests(TestCase):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.author)
-        cache.clear()
 
     def test_post_url_equal_post_name(self):
         """Cоответствие фактических адресов страниц с их именами"""

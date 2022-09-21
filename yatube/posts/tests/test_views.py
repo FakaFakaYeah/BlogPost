@@ -19,7 +19,7 @@ class PostViewsTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.FOLLOW_COEF = 1
-        cls.small_gif = (
+        cls.SMALL_GIF = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
             b'\x01\x00\x80\x00\x00\x00\x00\x00'
             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
@@ -29,12 +29,11 @@ class PostViewsTests(TestCase):
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=cls.small_gif,
+            content=cls.SMALL_GIF,
             content_type='image/gif'
         )
         cls.user = User.objects.create_user(username='Stepan')
         cls.authorized_user = User.objects.create_user(username='Sergei')
-        cls.authorized_user2 = User.objects.create_user(username='Lena')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test-slug',
@@ -71,7 +70,6 @@ class PostViewsTests(TestCase):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        cache.clear()
 
     def test_post_index_group_profile_page_show_correct_cont(self):
         """Проверка Context страниц index, group, profile
@@ -168,23 +166,21 @@ class PostViewsTests(TestCase):
         new_posts = self.guest_client.get(address).content
         self.assertNotEqual(new_posts, old_posts)
 
-    def test_authorized_user_follow_and_unfollow_correctly(self):
-        """Проверка подписки и отписки авторизованного пользователя """
-        self.authorized_client.force_login(self.authorized_user2)
-        response = self.authorized_client.get(
-            reverse('posts:profile', kwargs={'username': self.post.author}))
-        self.assertEqual(response.client, self.authorized_client)
+    def test_authorized_user_follow_correctly(self):
+        """Проверка подписки авторизованного пользователя """
         all_follow = Follow.objects.count()
-        Follow.objects.create(
-            user=self.authorized_user2,
-            author=self.user
-        )
+        self.authorized_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.authorized_user}))
         self.assertEqual(Follow.objects.count(), all_follow + self.FOLLOW_COEF)
+
+    def test_authorized_user_unfollow_correctly(self):
+        """Проверка отписки авторизованного пользователя """
+        self.authorized_client.force_login(self.authorized_user)
         all_follow = Follow.objects.count()
-        Follow.objects.get(
-            user=self.authorized_user,
-            author=self.user
-        ).delete()
+        self.authorized_client.get(
+            reverse('posts:profile_unfollow',
+                    kwargs={'username': self.user}))
         self.assertEqual(Follow.objects.count(), all_follow - self.FOLLOW_COEF)
 
     def test_new_post_in_follow(self):
@@ -194,6 +190,6 @@ class PostViewsTests(TestCase):
         self.authorized_client.force_login(self.authorized_user)
         response = self.authorized_client.get(address).context['page_obj']
         self.assertIn(self.post, response)
-        self.authorized_client.force_login(self.authorized_user2)
+        self.authorized_client.force_login(self.user)
         response = self.authorized_client.get(address).context['page_obj']
         self.assertNotIn(self.post, response)

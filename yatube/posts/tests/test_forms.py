@@ -16,15 +16,7 @@ class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
-        cls.small_new_gif = (
+        cls.SMALL_GIF = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
             b'\x01\x00\x80\x00\x00\x00\x00\x00'
             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
@@ -34,15 +26,15 @@ class PostFormTests(TestCase):
         )
         cls.uploaded = SimpleUploadedFile(
             name='small_new.gif',
-            content=cls.small_new_gif,
+            content=cls.SMALL_GIF,
             content_type='image/gif'
         )
         cls.uploaded_new = SimpleUploadedFile(
             name='small.gif',
-            content=cls.small_gif,
+            content=cls.SMALL_GIF,
             content_type='image/gif'
         )
-        cls.ID_COEF = 1  # Колличество идентификатор в some_post_id
+        cls.ID_COEF = 1  # Идентификатор для нахождения поста и комментария
         cls.user = User.objects.create_user(username='Stepan')
         cls.group = Group.objects.create(
             title='Тестовая группа',
@@ -153,5 +145,12 @@ class PostFormTests(TestCase):
                  - all_comments))
         self.assertEqual(len(some_comment_id), self.ID_COEF)
         comment = Comment.objects.get(id=some_comment_id[0])
-        self.assertEqual(comment.text, form_data['text'])
-        self.assertRedirects(response, redirect_page)
+        comment_objects = [
+            (comment.text, form_data['text']),
+            (comment.author, self.user),
+            (comment.post, self.post),
+        ]
+        for reverse_name, response_name in comment_objects:
+            with self.subTest(reverse_name=reverse_name):
+                self.assertEqual(response_name, reverse_name)
+            self.assertRedirects(response, redirect_page)

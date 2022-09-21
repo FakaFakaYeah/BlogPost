@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.views.decorators.cache import cache_page
 
 from .models import Post, Group, User, Follow
 from .forms import PostForm, CommentForm
@@ -14,7 +13,6 @@ def get_page_context(queryset, page):
     return page_obj
 
 
-@cache_page(20, key_prefix='index_page')
 def index(request):
     template = 'posts/index.html'
     posts = Post.objects.select_related('author', 'group')
@@ -39,11 +37,11 @@ def profile(request, username):
     template = 'posts/profile.html'
     author = get_object_or_404(User, username=username)
     posts = author.posts.select_related('group')
-    flag = True if request.user.is_authenticated and Follow.objects.filter(
-        user=request.user, author=author) else False
+    following = author.following.filter(
+        user=request.user.is_authenticated).exists()
     context = {
         'author': author,
-        'following': flag,
+        'following': following,
         'page_obj': get_page_context(posts, request.GET.get('page')),
     }
     return render(request, template, context)
@@ -56,7 +54,7 @@ def post_detail(request, post_id):
         (Post.objects.select_related('author', 'group'), pk=post_id)
     )
     comments = post.comments.select_related('author')
-    form = CommentForm(request.POST or None)
+    form = CommentForm()
     context = {
         'post': post,
         'comments': comments,
@@ -98,10 +96,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    post = (
-        get_object_or_404
-        (Post.objects.select_related('author', 'group'), pk=post_id)
-    )
+    post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -114,9 +109,8 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     template = 'posts/follow.html'
-    authors = request.user.follower.values_list('author', flat=True)
-    posts = (Post.objects.filter(
-        author__id__in=authors).select_related('author', 'group'))
+    posts = Post.objects.filter(
+        author__following__user=request.user).select_related('author', 'group')
     context = {
         'page_obj': get_page_context(posts, request.GET.get('page')),
     }
@@ -126,9 +120,8 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    follow = Follow.objects.filter(user=request.user, author=author).exists()
-    if request.user != author and follow is False:
-        Follow.objects.create(user=request.user, author=author)
+    if request.user != author:
+        Follow.objects.get_or_create(user=request.user, author=author)
     return redirect("posts:profile", username=username)
 
 
