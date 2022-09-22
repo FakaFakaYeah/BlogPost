@@ -173,6 +173,8 @@ class PostViewsTests(TestCase):
             reverse('posts:profile_follow',
                     kwargs={'username': self.authorized_user}))
         self.assertEqual(Follow.objects.count(), all_follow + self.FOLLOW_COEF)
+        self.assertTrue(Follow.objects.filter(
+            user=self.user, author=self.authorized_user).exists())
 
     def test_authorized_user_unfollow_correctly(self):
         """Проверка отписки авторизованного пользователя """
@@ -182,6 +184,8 @@ class PostViewsTests(TestCase):
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.user}))
         self.assertEqual(Follow.objects.count(), all_follow - self.FOLLOW_COEF)
+        self.assertFalse(Follow.objects.filter(
+            user=self.authorized_user, author=self.user).exists())
 
     def test_new_post_in_follow(self):
         """Новый пост появляется в ленте подписчиков и

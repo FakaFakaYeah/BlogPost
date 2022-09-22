@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import Q, F, CheckConstraint, UniqueConstraint
 
 User = get_user_model()
 
@@ -101,3 +102,10 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following'
     )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['user', 'author'], name='unique_follow'),
+            CheckConstraint(check=~Q(user=F('author')),
+                            name='subscribe_to_yourself')
+        ]

@@ -54,11 +54,10 @@ def post_detail(request, post_id):
         (Post.objects.select_related('author', 'group'), pk=post_id)
     )
     comments = post.comments.select_related('author')
-    form = CommentForm()
     context = {
         'post': post,
         'comments': comments,
-        'form': form
+        'form': CommentForm()
     }
     return render(request, template, context)
 
