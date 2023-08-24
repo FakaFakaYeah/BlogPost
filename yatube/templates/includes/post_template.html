@@ -5,6 +5,9 @@
             Автор: <a href="{% url "posts:profile" post.author.username %}" style="color: #1e2125; text-decoration:none "><b>{{ post.author.get_full_name}}</b></a>
         </li>
         <li>
+            Группа: <a href="{% url 'posts:group_list' post.group.slug %}" style="color: #1e2125; text-decoration: none"><b>{{ post.group.title }}</b></a>
+        </li>
+        <li>
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
         </li>
         <li>
@@ -15,13 +18,5 @@
       <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
     {% endthumbnail %}
     <p>{{ post.text }}</p>
-    {% if author %}
-          <a href="">подробная информация</a> <br>
-    {% endif %}
-    {% if not group and post.group %}
-        <h4>
-            <a href="{% url 'posts:group_list' post.group.slug %}" style="color: #1e2125; text-decoration:none"><b>Все записи группы</b></a>
-        </h4>
-    {% endif %}
     {% if not forloop.last %}<hr>{% endif %}
 </article>
