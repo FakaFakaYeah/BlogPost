@@ -41,6 +41,7 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
+        verbose_name_plural = 'Публикации авторов'
 
     def __str__(self):
         return self.text[:self.FIRST_POST_CHAR]
@@ -66,6 +67,9 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = 'Группы'
+
 
 class Comment(models.Model):
     post = models.ForeignKey(
@@ -90,6 +94,9 @@ class Comment(models.Model):
     def __str__(self):
         return self.post
 
+    class Meta:
+        verbose_name_plural = 'Комментарии'
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -109,3 +116,5 @@ class Follow(models.Model):
             CheckConstraint(check=~Q(user=F('author')),
                             name='subscribe_to_yourself')
         ]
+
+        verbose_name_plural = 'Подписки'
