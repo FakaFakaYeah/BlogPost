@@ -4,9 +4,11 @@
         <li>
             Автор: <a href="{% url "posts:profile" post.author.username %}" style="color: #1e2125; text-decoration:none "><b>{{ post.author.get_full_name}}</b></a>
         </li>
-        <li>
-            Группа: <a href="{% url 'posts:group_list' post.group.slug %}" style="color: #1e2125; text-decoration: none"><b>{{ post.group.title }}</b></a>
-        </li>
+        {% if post.group %}
+          <li>
+              Группа: <a href="{% url 'posts:group_list' post.group.slug %}" style="color: #1e2125; text-decoration: none"><b>{{ post.group.title }}</b></a>
+          </li>
+        {% endif %}
         <li>
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
         </li>
