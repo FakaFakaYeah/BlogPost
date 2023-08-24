@@ -5,8 +5,8 @@
  <li><a href="#description">Описание проекта</a></li>
  <li><a href="#stack">Используемые технологии</a></li>
  <li><a href="#architecture">Архитектура проекта</a></li>
+ <li><a href="#docker">Как запустить проект в Docker?</a></li>
  <li><a href="#start_project">Как развернуть проект локально?</a></li>
- <li><a href="#superuser">Создание суперпользователя</a></li>
  <li><a href="#author">Авторы проекта</a></li>
 </ol>
 
@@ -36,10 +36,63 @@ ___
 | `infra`    | Файлы для запуска с помощью Docker, настройки Nginx                |
 
 ___
+### Как запустить проект в Docker?<a name="docker"></a>
+* Запустите терминал и клонируйте репозиторий 
+    ```
+    git clone https://github.com/FakaFakaYeah/BlogPost.git
+    ```
+    
+* Создайте .env файл и заполните его по шаблону
+  ```
+  USE_POSTGRESQL=True # Если флаг стоит False, будет использована sqlite3
+  SECRET_KEY=  #укажите свой SECRET_KEY
+  DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
+  DB_NAME=  # имя базы данных
+  POSTGRES_USER= # логин для подключения к базе данных
+  POSTGRES_PASSWORD= # пароль для подключения к БД (установите свой)
+  DB_HOST=  # название сервиса (контейнера)
+  DB_PORT=  # порт для подключения к БД
+  ```
+  
+* Установите Docker по ссылке https://www.docker.com/products/docker-desktop
+
+* Перейдите в директорию с Docker-compose.yaml
+    ```
+    cd infra
+    ```
+
+* Выполните команду по разворачиванию docker-compose
+    ```
+    docker-compose up -d
+    ``` 
+  
+* Будет проведена сборка образа по Dockerfile и запуск проекта в трех контейнерах
+
+* Выполните миграции по следующей команде:
+    ```
+    docker-compose exec web python manage.py migrate
+    ```
+* Выполните сбор статики проекта по следующей команде:
+    ```
+    docker-compose exec web python manage.py collectstatic --no-input
+    ```
+* Cоздайте суперпользователя
+  ```
+  docker-compose exec web python manage.py createsuperuser
+  ```
+  укажите имя пользователя, почту и пароль
+  
+* Проект будет доступен по следующим адресам:
+  ```
+  http://localhost/ - главня страница проекта
+  http://localhost/admin/ - админ зона
+  ```
+
+___
 ### Как развернуть проект локально?<a name="start_project"></a>
 * Запустите терминал и клонируйте репозиторий 
   ```
-    git clone https://github.com/FakaFakaYeah/BlogPost.git
+  git clone https://github.com/FakaFakaYeah/BlogPost.git
   ```
 
 * Создайте и активируйте виртуальное окружение
@@ -77,24 +130,23 @@ ___
   ```
   python manage.py migrate
   ```
+
+* Создайте суперпользователя
+  ```
+  python manage.py createsuperuser
+  ```
+  укажите имя пользователя, почту и пароль
   
 * Запустите проект
   ```
   python manage.py runserver
   ```
-
-___
-### Создание суперпользователя<a name="superuser"></a>
-По следующей команде вы можете создать суперпользователя, если вам нужен доступ в админ зону
-```
-python manage.py createsuperuser
-```
-Потребуется ввести имя пользователя, почту и пароль
-
-После успешного создания суперпользователя и ввода логин/пароль на странице http://127.0.0.1/admin/ 
-будет открыт доступ в админ-зону. По адресу http://127.0.0.1/ будет
-доступна главная страница площадки.
-
+  
+* Проект будет доступен по следующим адресам:
+  ```
+  http://127.0.0.1:8000/ - главня страница проекта
+  http://127.0.0.1:8000/admin/ - админ зона
+  ```
 ___
 ### Авторы проекта:<a name="author"></a>
 Смирнов Степан
