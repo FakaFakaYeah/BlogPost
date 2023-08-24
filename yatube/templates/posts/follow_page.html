@@ -9,7 +9,10 @@
 {% block content %}
     {% for follow in page_obj %}
       {% if is_edit %}
-        <h1>{{ follow.author.get_full_name }} </h1>
+        <h1>
+          <a href="{% url "posts:profile" follow.author.username %}" style="color: #1e2125; text-decoration:none"  >{{ follow.author.get_full_name}}</a>
+          </a>
+        </h1>
         <h3>Всего постов: {{ follow.author.posts.count }} </h3>
           <a
            class="btn btn-lg btn-light"
@@ -18,7 +21,10 @@
           Отписаться
         </a>
       {% else %}
-        <h1>{{ follow.user.get_full_name }} </h1>
+        <h1>
+          <a href="{% url "posts:profile" follow.user.username %}" style="color: #1e2125; text-decoration:none"  >{{ follow.user.get_full_name}}</a>
+          </a>
+        </h1>
         <h3>Всего постов: {{ follow.user.posts.count }} </h3>
       {% endif %}
     {% endfor %}

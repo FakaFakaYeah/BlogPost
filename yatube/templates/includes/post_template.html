@@ -2,13 +2,13 @@
 <article>
     <ul>
         <li>
-            Автор: <a href="{% url "posts:profile" post.author.username %}">{{ post.author.get_full_name}}</a>
+            Автор: <a href="{% url "posts:profile" post.author.username %}" style="color: #1e2125; text-decoration:none "><b>{{ post.author.get_full_name}}</b></a>
         </li>
         <li>
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
         </li>
         <li>
-            <a href="{% url "posts:post_detail" post.id %}">Перейти на страницу поста</a>
+            <a href="{% url "posts:post_detail" post.id %}" style="color: #1e2125; text-decoration:none"><b>Перейти на страницу поста</b></a>
         </li>
     </ul>
     {% thumbnail post.image "1200x600"  upscale=True as im %}
@@ -19,7 +19,9 @@
           <a href="">подробная информация</a> <br>
     {% endif %}
     {% if not group and post.group %}
-          <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+        <h4>
+            <a href="{% url 'posts:group_list' post.group.slug %}" style="color: #1e2125; text-decoration:none"><b>Все записи группы</b></a>
+        </h4>
     {% endif %}
     {% if not forloop.last %}<hr>{% endif %}
 </article>
