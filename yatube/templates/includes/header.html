@@ -17,6 +17,14 @@
         </li>
         {% if user.is_authenticated %}
           <li class="nav-item">
+            <a class="nav-link {% if view_name  == 'posts:my_follow' %}active{% endif %}"
+               href="{% url 'posts:my_follow' %}">Мои подписки</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name  == 'posts:my_follower' %}active{% endif %}"
+               href="{% url 'posts:my_follower' %}">Мои подписчики</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link {% if view_name  == 'posts:post_create' %}active{% endif %}"
                href="{% url 'posts:post_create' %}">Новая запись</a>
           </li>
@@ -27,8 +35,9 @@
           <li class="nav-item">
             <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
           </li>
-          <li>
-            Пользователь: {{ user.username }}
+          <li class="nav-item">
+            <a class="nav-link link-light {% if view_name  == "posts:profile" %}active{% endif %}"
+              href="{% url "posts:profile" request.user.username %}">Мой профиль</a>
           </li>
         {% else %}
         <li class="nav-item">

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+    {% if is_edit %}
+        Мои подписки
+    {% else %}
+        Мои подписчики
+    {% endif %}
+{% endblock %}
+{% block content %}
+    {% for follow in page_obj %}
+      {% if is_edit %}
+        <h1>{{ follow.author.get_full_name }} </h1>
+        <h3>Всего постов: {{ follow.author.posts.count }} </h3>
+          <a
+           class="btn btn-lg btn-light"
+           href="{% url 'posts:profile_unfollow' follow.author.username %}" role="button"
+        >
+          Отписаться
+        </a>
+      {% else %}
+        <h1>{{ follow.user.get_full_name }} </h1>
+        <h3>Всего постов: {{ follow.user.posts.count }} </h3>
+      {% endif %}
+    {% endfor %}
+{% endblock %}

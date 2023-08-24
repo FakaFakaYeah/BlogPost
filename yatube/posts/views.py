@@ -131,3 +131,26 @@ def profile_unfollow(request, username):
         user=request.user,
         author=following).delete()
     return redirect('posts:profile', username=username)
+
+
+@login_required
+def my_follow(request):
+    template = 'posts/follow_page.html'
+    authors = request.user.follower.select_related('author')
+    context = {
+        'page_obj': get_page_context(authors, request.GET.get('page')),
+        'is_edit': True
+    }
+    return render(request, template,  context)
+
+
+@login_required
+def my_follower(request):
+    template = 'posts/follow_page.html'
+    authors = request.user.following.select_related('author')
+    context = {
+        'page_obj': get_page_context(authors, request.GET.get('page')),
+    }
+    return render(request, template,  context)
+
+
