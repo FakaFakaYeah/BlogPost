@@ -103,7 +103,7 @@ ___
   Если у вас Linux/macOS
 
   ```
-    source venv/bin/activate
+  source venv/bin/activate
   ```
   
   Если у вас windows
