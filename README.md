@@ -18,7 +18,7 @@ ___
 
 ___
 ### **Используемые технологии**<a name="stack"></a>
-![](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=jinja&logoColor=white)
+![](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
 ![](https://img.shields.io/badge/HTML-red?style=for-the-badge)
 ![](https://img.shields.io/badge/CSS-2CA5E0?style=for-the-badge)
