@@ -60,7 +60,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 WSGI_APPLICATION = 'yatube.wsgi.application'
 
-if os.getenv("USE_POSTGRESQL", False) is True:
+DATABASE = os.getenv("USE_POSTGRESQL") == 'True'
+
+if DATABASE is True:
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
