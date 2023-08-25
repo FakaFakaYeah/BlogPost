@@ -44,7 +44,7 @@ ___
     
 * Создайте .env файл и заполните его по шаблону
   ```
-  USE_POSTGRESQL=True  #Если флаг стоит False, будет использована sqlite3
+  USE_POSTGRESQL=True  # Установите True, чтобы в докере использовалась PostgreSQL
   SECRET_KEY=   #укажите свой SECRET_KEY
   DB_ENGINE=django.db.backends.postgresql  #указываем, что работаем с postgresql
   DB_NAME=    #имя базы данных
