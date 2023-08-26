@@ -96,19 +96,18 @@ ___
   ```
 
 * Создайте и активируйте виртуальное окружение
-  ```
-  python3 -m venv venv
-  ```
 
   Если у вас Linux/macOS
 
   ```
+  python3 -m venv venv
   source venv/bin/activate
   ```
   
   Если у вас windows
 
   ```
+  python -m venv venv
   source venv/scripts/activate
   ```
   
